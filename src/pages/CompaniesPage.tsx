@@ -19,7 +19,6 @@ const CompaniesPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Title */}
       <header className="flex items-center gap-2">
         <HiOutlineBuildingOffice2 className="text-emerald-600" size={24} />
         <h1 className="text-2xl font-semibold text-slate-900">
@@ -27,7 +26,6 @@ const CompaniesPage = () => {
         </h1>
       </header>
 
-      {/* Search bar */}
       <section>
         <form
           onSubmit={(e) => e.preventDefault()}
@@ -52,7 +50,6 @@ const CompaniesPage = () => {
         </form>
       </section>
 
-      {/* List */}
       <section className="space-y-3">
         {filteredCompanies.map((company) => (
           <CompanyCard key={company.id} company={company} />

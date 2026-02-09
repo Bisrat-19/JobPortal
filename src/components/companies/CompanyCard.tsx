@@ -9,7 +9,6 @@ interface CompanyCardProps {
 const CompanyCard = ({ company }: CompanyCardProps) => {
   return (
     <article className="bg-white border rounded-lg shadow-sm p-4 flex items-center justify-between gap-4">
-      {/* Left: logo + text */}
       <div className="flex items-center gap-4 min-w-0">
         {/* Logo circle (placeholder color) */}
         <div className="h-12 w-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-lg font-semibold">
@@ -36,7 +35,6 @@ const CompanyCard = ({ company }: CompanyCardProps) => {
         </div>
       </div>
 
-      {/* Right: View Jobs button */}
       <div className="flex-shrink-0">
         <Link
           to={`/companies/${company.id}`}

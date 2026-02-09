@@ -24,9 +24,7 @@ const CompanyDetailsPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      {/* Main content */}
       <div className="flex-1 space-y-6">
-        {/* Header card */}
         <section className="bg-white border rounded-lg shadow-sm p-6 space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -65,7 +63,6 @@ const CompanyDetailsPage = () => {
           <p className="text-sm text-slate-600 max-w-2xl">{company.tagline}</p>
         </section>
 
-        {/* Open positions */}
         <section className="space-y-3">
           <h2 className="text-lg font-semibold text-slate-900">
             Open Positions
@@ -83,7 +80,6 @@ const CompanyDetailsPage = () => {
         </section>
       </div>
 
-      {/* Sidebar */}
       <aside className="w-full lg:w-72 space-y-4">
         <section className="bg-white border rounded-lg shadow-sm p-4 space-y-3">
           <h3 className="text-sm font-semibold text-slate-900">
