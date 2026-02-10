@@ -1,11 +1,14 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { jobs } from "../data/jobs";
 import type { Job } from "../types/job";
 import NotFoundPage from "./NotFoundPage";
-import { HiOutlineMapPin, HiOutlineCurrencyDollar, HiOutlineClock } from "react-icons/hi2";
+import { HiOutlineMapPin, HiOutlineCurrencyDollar, HiOutlineClock, HiOutlineHeart } from "react-icons/hi2";
+import { useAuth } from "../hooks/useAuth";
 
 const JobDetailsPage = () => {
   const { jobId } = useParams<{ jobId: string }>();
+  const navigate = useNavigate();
+  const { isAuthenticated, savedJobIds, toggleSavedJob } = useAuth();
 
   const job: Job | undefined = jobs.find((j) => j.id === jobId);
 
@@ -20,6 +23,16 @@ const JobDetailsPage = () => {
         (j.companyId === job.companyId || j.location === job.location)
     )
     .slice(0, 5);
+
+  const isSaved = savedJobIds.includes(job.id);
+
+  const handleSaveJob = () => {
+    if (!isAuthenticated) {
+      navigate("/signin");
+      return;
+    }
+    toggleSavedJob(job.id);
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
@@ -62,11 +75,26 @@ const JobDetailsPage = () => {
           </div>
     
           <div className="flex flex-wrap gap-3">
-            <button className="px-5 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700">
+            <button
+              type="button"
+              onClick={() => navigate(`/jobs/${job.id}/apply`)}
+              className="px-5 py-2 rounded-md bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700"
+            >
               Apply Now
             </button>
-            <button className="px-5 py-2 rounded-md border border-slate-300 text-sm font-medium text-slate-700 bg-white hover:bg-slate-50">
-              Save Job
+            <button
+              type="button"
+              onClick={handleSaveJob}
+              className={`px-5 py-2 rounded-md border text-sm font-medium flex items-center gap-2 transition-colors ${
+                isSaved
+                  ? "border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                  : "border-slate-300 text-slate-700 bg-white hover:bg-slate-50"
+              }`}
+            >
+              <HiOutlineHeart
+                className={isSaved ? "text-rose-500" : "text-slate-400"}
+              />
+              <span>{isSaved ? "Saved" : "Save Job"}</span>
             </button>
           </div>
         </section>

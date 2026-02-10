@@ -1,28 +1,19 @@
-import { useState } from "react";
 import { HiOutlineBriefcase } from "react-icons/hi2";
-import { jobs } from "../data/jobs";
 import JobCard from "../components/jobs/JobCard";
 import JobFiltersBar from "../components/jobs/JobFiltersBar";
+import { useJobFilters } from "../hooks/useJobFilters";
 
 const JobsPage = () => {
-  const [keyword, setKeyword] = useState("");
-  const [location, setLocation] = useState("All");
-  const [jobType, setJobType] = useState("All");
-
-  const locations = Array.from(new Set(jobs.map((job) => job.location)));
-
-  const filteredJobs = jobs.filter((job) => {
-    const k = keyword.toLowerCase().trim();
-    const matchesKeyword =
-      k === "" ||
-      job.title.toLowerCase().includes(k) ||
-      job.companyId.toLowerCase().includes(k);
-
-    const matchesLocation = location === "All" || job.location === location;
-    const matchesJobType = jobType === "All" || job.jobType === jobType;
-
-    return matchesKeyword && matchesLocation && matchesJobType;
-  });
+  const {
+    keyword,
+    setKeyword,
+    location,
+    setLocation,
+    jobType,
+    setJobType,
+    locations,
+    filteredJobs,
+  } = useJobFilters();
 
   return (
     <div className="flex flex-col gap-6">
