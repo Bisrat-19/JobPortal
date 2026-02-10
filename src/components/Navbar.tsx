@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { HiOutlineUserCircle, HiChevronDown, HiOutlineHeart } from "react-icons/hi2";
 import { useAuth } from "../hooks/useAuth";
@@ -10,12 +10,31 @@ const Navbar = () => {
   const { isAuthenticated, user, signOut, savedJobIds } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const handleLogout = () => {
     signOut();
     setIsMenuOpen(false);
     navigate("/signin");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!menuRef.current) return;
+      const target = event.target as Node | null;
+      if (target && !menuRef.current.contains(target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-20 bg-white border-b shadow-sm">
@@ -77,7 +96,7 @@ const Navbar = () => {
               )}
             </NavLink>
 
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button
                 type="button"
                 onClick={() => setIsMenuOpen((open) => !open)}
