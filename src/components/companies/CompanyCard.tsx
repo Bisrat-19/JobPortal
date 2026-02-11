@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { HiOutlineBuildingOffice2, HiOutlineMapPin } from "react-icons/hi2";
-import type { Company } from "../../types/company";
+import type { Company } from "../../types/api";
 
 interface CompanyCardProps {
   company: Company;
