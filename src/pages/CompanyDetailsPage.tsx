@@ -2,8 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { HiOutlineBuildingOffice2, HiOutlineMapPin, HiOutlineBriefcase } from "react-icons/hi2";
 import { companies } from "../data/companies";
 import { jobs } from "../data/jobs";
-import type { Company } from "../types/company";
-import type { Job } from "../types/job";
+import type { Company, Job } from "../types/api";
 import NotFoundPage from "./NotFoundPage";
 import JobCard from "../components/jobs/JobCard";
 

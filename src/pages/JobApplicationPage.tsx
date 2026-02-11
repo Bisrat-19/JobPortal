@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { HiOutlineArrowLeft, HiOutlineMapPin, HiOutlineCurrencyDollar } from "react-icons/hi2";
 import { jobs } from "../data/jobs";
-import type { Job } from "../types/job";
+import type { Job } from "../types/api";
 import NotFoundPage from "./NotFoundPage";
 import JobApplicationForm from "../components/jobs/JobApplicationForm";
 

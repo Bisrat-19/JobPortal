@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { jobs } from "../data/jobs";
-import type { Job } from "../types/job";
+import type { Job } from "../types/api";
 import NotFoundPage from "./NotFoundPage";
 import { HiOutlineMapPin, HiOutlineCurrencyDollar, HiOutlineClock, HiOutlineHeart } from "react-icons/hi2";
 import { useAuth } from "../hooks/useAuth";

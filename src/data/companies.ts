@@ -1,4 +1,5 @@
-import type { Company } from "../types/company";
+import type { Company } from "../types/api";
+
 
 export const companies: Company[] = [
   {

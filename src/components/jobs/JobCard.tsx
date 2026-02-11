@@ -5,7 +5,7 @@ import {
   HiOutlineCurrencyDollar,
   HiOutlineClock,
 } from "react-icons/hi2";
-import type { Job } from "../../types/job";
+import type { Job } from "../../types/api";
 
 interface JobCardProps {
   job: Job;
