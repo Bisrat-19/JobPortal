@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { HiOutlineLockClosed, HiOutlineEnvelope, HiOutlineUser } from "react-icons/hi2";
+import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../hooks/useAuth";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
-    const { signUp } = useAuth();
+    const { signUp, isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate("/home", { replace: true });
+        }
+    }, [isAuthenticated, navigate]);
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -36,7 +45,9 @@ const SignUpPage = () => {
         setLoading(true);
         try {
             await signUp(name, email, password);
-            navigate("/");
+            // clear sensitive fields after successful signup
+            setPassword("");
+            setConfirmPassword("");
         } catch {
             setError("Sign up failed. Please try again.");
         } finally {
@@ -58,7 +69,7 @@ const SignUpPage = () => {
                     </p>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
                     <div className="space-y-1 text-sm">
                         <label className="block text-slate-700">Full Name</label>
                         <div className="flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-2 focus-within:ring-emerald-500">
@@ -83,6 +94,7 @@ const SignUpPage = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full text-sm outline-none border-none bg-transparent"
                                 placeholder="Enter your email"
+                                autoComplete="off"
                             />
                         </div>
                     </div>
@@ -92,12 +104,20 @@ const SignUpPage = () => {
                         <div className="flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-2 focus-within:ring-emerald-500">
                             <HiOutlineLockClosed className="text-slate-400" />
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full text-sm outline-none border-none bg-transparent"
                                 placeholder="Create a password"
+                                autoComplete="new-password"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword((v) => !v)}
+                                className="text-xs text-slate-500 hover:text-slate-700"
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
                         </div>
                     </div>
 
@@ -106,12 +126,20 @@ const SignUpPage = () => {
                         <div className="flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-2 focus-within:ring-emerald-500">
                             <HiOutlineLockClosed className="text-slate-400" />
                             <input
-                                type="password"
+                                type={showConfirmPassword ? "text" : "password"}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 className="w-full text-sm outline-none border-none bg-transparent"
                                 placeholder="Repeat your password"
+                                autoComplete="new-password"
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword((v) => !v)}
+                                className="text-xs text-slate-500 hover:text-slate-700"
+                            >
+                                {showConfirmPassword ? "Hide" : "Show"}
+                            </button>
                         </div>
                     </div>
 
@@ -123,6 +151,20 @@ const SignUpPage = () => {
                         {loading ? "Signing up..." : "Sign Up"}
                     </button>
                 </form>
+
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <span className="h-px flex-1 bg-slate-200" />
+                    <span>or</span>
+                    <span className="h-px flex-1 bg-slate-200" />
+                </div>
+
+                <button
+                    type="button"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                >
+                    <FcGoogle className="h-4 w-4" />
+                    <span>Continue with Google</span>
+                </button>
 
                 <p className="text-xs text-center text-slate-600">
                     Already have an account?{" "}

@@ -46,7 +46,7 @@ const Navbar = () => {
 
         <nav className="flex items-center gap-6">
           <NavLink
-            to="/"
+            to="/home"
             className={({ isActive }) =>
               isActive
                 ? `${linkBase} text-slate-900 border-b-2 border-emerald-600 pb-1`

@@ -10,13 +10,25 @@ import SignUpPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CompanyDetailsPage from "./pages/CompanyDetailsPage";
 import SavedJobsPage from "./pages/SavedJobsPage";
+import RequireAuth from "./routes/RequireAuth";
 
 const App = () => {
   return (
     <Routes>
-      {/* routes that share the main layout */}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<HomePage />} />
+      {/* public auth routes */}
+      <Route path="/" element={<SignInPage />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+
+      {/* routes that share the main layout and require auth */}
+      <Route
+        element={
+          <RequireAuth>
+            <MainLayout />
+          </RequireAuth>
+        }
+      >
+        <Route path="/home" element={<HomePage />} />
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
         <Route path="/jobs/:jobId/apply" element={<JobApplicationPage />} />
@@ -24,10 +36,6 @@ const App = () => {
         <Route path="/companies" element={<CompaniesPage />} />
         <Route path="/companies/:companyId" element={<CompanyDetailsPage />} />
       </Route>
-
-      {/* auth routes */}
-      <Route path="/signin" element={<SignInPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
 
       {/* catch-all route */}
       <Route path="*" element={<NotFoundPage />} />
