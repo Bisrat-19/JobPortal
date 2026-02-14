@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HiOutlineLockClosed, HiOutlineEnvelope, HiOutlineUser } from "react-icons/hi2";
+import { HiOutlineLockClosed, HiOutlineEnvelope, HiOutlineUser, HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../hooks/useAuth";
+import type { UserRole } from "../types/api";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
@@ -20,6 +21,8 @@ const SignUpPage = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [role, setRole] = useState<UserRole>("user");
+    const [companyName, setCompanyName] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,6 +32,11 @@ const SignUpPage = () => {
 
         if (!name || !email || !password || !confirmPassword) {
             setError("All fields are required.");
+            return;
+        }
+
+        if (role === "company" && !companyName) {
+            setError("Company name is required for company accounts.");
             return;
         }
 
@@ -44,10 +52,13 @@ const SignUpPage = () => {
 
         setLoading(true);
         try {
-            await signUp(name, email, password);
+            await signUp(name, email, password, role, {
+                companyName,
+            });
             // clear sensitive fields after successful signup
             setPassword("");
             setConfirmPassword("");
+            setCompanyName("");
         } catch {
             setError("Sign up failed. Please try again.");
         } finally {
@@ -71,6 +82,39 @@ const SignUpPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
                     <div className="space-y-1 text-sm">
+                        <label className="block text-slate-700">Account Type</label>
+                        <div className="flex gap-3 text-xs">
+                            <button
+                                type="button"
+                                onClick={() => setRole("user")}
+                                className={`flex-1 rounded-md border px-3 py-2 text-left ${
+                                    role === "user"
+                                        ? "border-emerald-600 bg-emerald-50 text-emerald-700"
+                                        : "border-slate-300 bg-white text-slate-700"
+                                }`}
+                            >
+                                <span className="block font-medium">Freelancer</span>
+                                <span className="block text-[11px] text-slate-500">
+                                    Search and apply for jobs
+                                </span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setRole("company")}
+                                className={`flex-1 rounded-md border px-3 py-2 text-left ${
+                                    role === "company"
+                                        ? "border-emerald-600 bg-emerald-50 text-emerald-700"
+                                        : "border-slate-300 bg-white text-slate-700"
+                                }`}
+                            >
+                                <span className="block font-medium">Company</span>
+                                <span className="block text-[11px] text-slate-500">
+                                    Post jobs and manage applicants
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="space-y-1 text-sm">
                         <label className="block text-slate-700">Full Name</label>
                         <div className="flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-2 focus-within:ring-emerald-500">
                             <HiOutlineUser className="text-slate-400" />
@@ -83,6 +127,22 @@ const SignUpPage = () => {
                             />
                         </div>
                     </div>
+
+                    {role === "company" && (
+                        <div className="space-y-1 text-sm">
+                            <label className="block text-slate-700">Company Name</label>
+                            <div className="flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 focus-within:ring-2 focus-within:ring-emerald-500">
+                                <HiOutlineBuildingOffice2 className="text-slate-400" />
+                                <input
+                                    type="text"
+                                    value={companyName}
+                                    onChange={(e) => setCompanyName(e.target.value)}
+                                    className="w-full text-sm outline-none border-none bg-transparent"
+                                    placeholder="Enter your company name"
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     <div className="space-y-1 text-sm">
                         <label className="block text-slate-700">Email Address</label>

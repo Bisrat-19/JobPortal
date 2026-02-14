@@ -1,6 +1,10 @@
+export type UserRole = "user" | "company" | "admin";
+
 export interface AuthUser {
   name: string;
   email: string;
+  role: UserRole;
+  companyId?: string;
 }
 
 export interface Job {

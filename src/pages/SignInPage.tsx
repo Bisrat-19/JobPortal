@@ -6,13 +6,17 @@ import { useAuth } from "../hooks/useAuth";
 
 const SignInPage = () => {
     const navigate = useNavigate();
-    const { signIn, isAuthenticated } = useAuth();
+    const { signIn, isAuthenticated, user } = useAuth();
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (!isAuthenticated || !user) return;
+
+        if (user.role === "company") {
+            navigate("/home", { replace: true });
+        } else {
             navigate("/home", { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, user, navigate]);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
