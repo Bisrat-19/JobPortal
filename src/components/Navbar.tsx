@@ -75,6 +75,18 @@ const Navbar = () => {
           >
             Companies
           </NavLink>
+          {isAuthenticated && user?.role === "company" && (
+            <NavLink
+              to="/company/dashboard"
+              className={({ isActive }) =>
+                isActive
+                  ? `${linkBase} text-slate-900 border-b-2 border-emerald-600 pb-1`
+                  : linkBase
+              }
+            >
+              Dashboard
+            </NavLink>
+          )}
         </nav>
         {isAuthenticated ? (
           <div className="flex items-center gap-3">

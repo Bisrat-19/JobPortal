@@ -2,14 +2,17 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiOutlinePaperClip, HiOutlineUser, HiOutlineEnvelope } from "react-icons/hi2";
 import { useAuth } from "../../hooks/useAuth";
+import { useJobBoard } from "../../lib/JobBoardContext";
 
 interface JobApplicationFormProps {
+  jobId: string;
   jobTitle: string;
 }
 
-const JobApplicationForm = ({ jobTitle }: JobApplicationFormProps) => {
+const JobApplicationForm = ({ jobId, jobTitle }: JobApplicationFormProps) => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const { applyToJob } = useJobBoard();
 
   const [fullName, setFullName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
@@ -35,7 +38,16 @@ const JobApplicationForm = ({ jobTitle }: JobApplicationFormProps) => {
 
     setSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      applyToJob({
+        jobId,
+        applicantName: fullName,
+        applicantEmail: email,
+        resumeUrl,
+        coverLetter,
+      });
+
       setSubmitted(true);
     } catch {
       setError("Something went wrong. Please try again.");

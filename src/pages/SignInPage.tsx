@@ -12,7 +12,7 @@ const SignInPage = () => {
         if (!isAuthenticated || !user) return;
 
         if (user.role === "company") {
-            navigate("/home", { replace: true });
+            navigate("/company/dashboard", { replace: true });
         } else {
             navigate("/home", { replace: true });
         }
@@ -39,7 +39,6 @@ const SignInPage = () => {
             if (remember) {
                 localStorage.setItem("jobportal:lastEmail", email);
             }
-            // clear sensitive fields after successful login
             setPassword("");
         } catch {
             setError("Sign in failed. Please try again.");

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import RequireAuth from "./routes/RequireAuth";
+import RequireCompany from "./routes/RequireCompany";
 import {
   LazyCompaniesPage,
   LazyCompanyDetailsPage,
@@ -9,6 +10,7 @@ import {
   LazyJobApplicationPage,
   LazyJobDetailsPage,
   LazyJobsPage,
+  LazyCompanyDashboardPage,
   LazyNotFoundPage,
   LazySavedJobsPage,
   LazySignInPage,
@@ -43,6 +45,14 @@ const App = () => {
           <Route path="/saved-jobs" element={<LazySavedJobsPage />} />  
           <Route path="/companies" element={<LazyCompaniesPage />} />
           <Route path="/companies/:companyId" element={<LazyCompanyDetailsPage />} />
+          <Route
+            path="/company/dashboard"
+            element={
+              <RequireCompany>
+                <LazyCompanyDashboardPage />
+              </RequireCompany>
+            }
+          />
         </Route>
 
         <Route path="*" element={<LazyNotFoundPage />} />

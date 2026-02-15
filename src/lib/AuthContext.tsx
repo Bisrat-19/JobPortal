@@ -4,6 +4,9 @@ import type { AuthUser, UserRole } from "../types/api";
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
+  isCompany: boolean;
+  isUser: boolean;
+  isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (
     name: string,
@@ -34,13 +37,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser({ name: "John Doe", email, role: "user" });
   };
 
-  const signUp = async (
-    name: string,
-    email: string,
-    _password: string,
-    role: UserRole,
-    options?: { companyName?: string }
-  ) => {
+  const signUp = async (name: string, email: string, _password: string, role: UserRole,
+    options?: { companyName?: string }) => {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     let companyId: string | undefined;
@@ -70,6 +68,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       value={{
         user,
         isAuthenticated: Boolean(user),
+        isCompany: user?.role === "company",
+        isUser: user?.role === "user",
+        isAdmin: user?.role === "admin",
         signIn,
         signUp,
         signOut,

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { jobs } from "../data/jobs";
+import { useJobBoard } from "../lib/JobBoardContext";
 
 export const useJobFilters = () => {
   const [searchParams] = useSearchParams();
@@ -10,9 +10,11 @@ export const useJobFilters = () => {
   const [location, setLocation] = useState("All");
   const [jobType, setJobType] = useState("All");
 
+  const { jobs } = useJobBoard();
+
   const locations = useMemo(
     () => Array.from(new Set(jobs.map((job) => job.location))),
-    []
+    [jobs]
   );
 
   const filteredJobs = useMemo(() => {
@@ -29,7 +31,7 @@ export const useJobFilters = () => {
 
       return matchesKeyword && matchesLocation && matchesJobType;
     });
-  }, [keyword, location, jobType]);
+  }, [keyword, location, jobType, jobs]);
 
   return {
     keyword,

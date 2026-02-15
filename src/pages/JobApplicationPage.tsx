@@ -1,18 +1,20 @@
 import { useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { HiOutlineArrowLeft, HiOutlineMapPin, HiOutlineCurrencyDollar } from "react-icons/hi2";
-import { jobs } from "../data/jobs";
 import type { Job } from "../types/api";
 import NotFoundPage from "./NotFoundPage";
 import JobApplicationForm from "../components/jobs/JobApplicationForm";
+import { useJobBoard } from "../lib/JobBoardContext";
 
 const JobApplicationPage = () => {
   const { jobId } = useParams<{ jobId: string }>();
   const navigate = useNavigate();
 
+  const { jobs } = useJobBoard();
+
   const job: Job | undefined = useMemo(
     () => jobs.find((j) => j.id === jobId),
-    [jobId]
+    [jobs, jobId]
   );
 
   if (!job) {
@@ -56,7 +58,7 @@ const JobApplicationPage = () => {
         </div>
       </section>
 
-      <JobApplicationForm jobTitle={job.title} />
+      <JobApplicationForm jobId={job.id} jobTitle={job.title} />
     </div>
   );
 };

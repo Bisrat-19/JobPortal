@@ -7,13 +7,17 @@ import type { UserRole } from "../types/api";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
-    const { signUp, isAuthenticated } = useAuth();
+    const { signUp, isAuthenticated, user } = useAuth();
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (!isAuthenticated || !user) return;
+
+        if (user.role === "company") {
+            navigate("/company/dashboard", { replace: true });
+        } else {
             navigate("/home", { replace: true });
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, user, navigate]);
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
