@@ -11,6 +11,7 @@ import {
   LazyJobDetailsPage,
   LazyJobsPage,
   LazyCompanyDashboardPage,
+  LazyProfilePage,
   LazyNotFoundPage,
   LazySavedJobsPage,
   LazySignInPage,
@@ -53,6 +54,7 @@ const App = () => {
               </RequireCompany>
             }
           />
+          <Route path="/profile" element={<LazyProfilePage />} />
         </Route>
 
         <Route path="*" element={<LazyNotFoundPage />} />

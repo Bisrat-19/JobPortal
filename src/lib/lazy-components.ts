@@ -11,3 +11,4 @@ export const LazySignInPage = lazy(() => import("../pages/SignInPage"));
 export const LazySignUpPage = lazy(() => import("../pages/SignUpPage"));
 export const LazyNotFoundPage = lazy(() => import("../pages/NotFoundPage")); 
 export const LazyCompanyDashboardPage = lazy(() => import("../pages/CompanyDashboardPage"));
+export const LazyProfilePage = lazy(() => import("../pages/ProfilePage"));

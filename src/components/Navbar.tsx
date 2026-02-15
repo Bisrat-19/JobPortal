@@ -129,10 +129,13 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-2 w-40 rounded-md border border-slate-200 bg-white shadow-lg py-1 text-sm text-slate-700">
                   <button
                     type="button"
-                    className="w-full text-left px-3 py-2 hover:bg-slate-50 cursor-not-allowed text-slate-400"
-                    disabled
+                    className="w-full text-left px-3 py-2 hover:bg-slate-50"
+                    onClick={() => {
+                      navigate("/profile");
+                      setIsMenuOpen(false);
+                    }}
                   >
-                    Edit Profile (coming soon)
+                    Edit Profile
                   </button>
                   <button
                     type="button"

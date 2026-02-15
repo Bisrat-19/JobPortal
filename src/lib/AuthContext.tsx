@@ -7,6 +7,7 @@ interface AuthContextValue {
   isCompany: boolean;
   isUser: boolean;
   isAdmin: boolean;
+  updateProfile: (updates: Partial<Pick<AuthUser, "name" | "companyName">>) => void;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (
     name: string,
@@ -37,17 +38,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser({ name: "John Doe", email, role: "user" });
   };
 
-  const signUp = async (name: string, email: string, _password: string, role: UserRole,
-    options?: { companyName?: string }) => {
+  const signUp = async (
+    name: string,
+    email: string,
+    _password: string,
+    role: UserRole,
+    options?: { companyName?: string }
+  ) => {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     let companyId: string | undefined;
+    let companyName: string | undefined;
 
     if (role === "company" && options?.companyName) {
       companyId = `company-${Date.now()}`;
+      companyName = options.companyName;
     }
 
-    setUser({ name, email, role, companyId });
+    setUser({ name, email, role, companyId, companyName });
+  };
+
+  const updateProfile: AuthContextValue["updateProfile"] = (updates) => {
+    setUser((prev) => (prev ? { ...prev, ...updates } : prev));
   };
 
   const signOut = () => {
@@ -71,6 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         isCompany: user?.role === "company",
         isUser: user?.role === "user",
         isAdmin: user?.role === "admin",
+        updateProfile,
         signIn,
         signUp,
         signOut,

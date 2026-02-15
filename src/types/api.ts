@@ -5,6 +5,7 @@ export interface AuthUser {
   email: string;
   role: UserRole;
   companyId?: string;
+  companyName?: string;
 }
 
 export interface Job {
