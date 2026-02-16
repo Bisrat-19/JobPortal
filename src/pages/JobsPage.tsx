@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { HiOutlineBriefcase } from "react-icons/hi2";
 import JobCard from "../components/jobs/JobCard";
 import JobFiltersBar from "../components/jobs/JobFiltersBar";
@@ -15,6 +16,27 @@ const JobsPage = () => {
     filteredJobs,
   } = useJobFilters();
 
+  const handleKeywordChange = useCallback(
+    (value: string) => {
+      setKeyword(value);
+    },
+    [setKeyword],
+  );
+
+  const handleLocationChange = useCallback(
+    (value: string) => {
+      setLocation(value);
+    },
+    [setLocation],
+  );
+
+  const handleJobTypeChange = useCallback(
+    (value: string) => {
+      setJobType(value);
+    },
+    [setJobType],
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <header className="flex items-center gap-2">
@@ -30,9 +52,9 @@ const JobsPage = () => {
           location={location}
           jobType={jobType}
           locations={locations}
-          onKeywordChange={setKeyword}
-          onLocationChange={setLocation}
-          onJobTypeChange={setJobType}
+          onKeywordChange={handleKeywordChange}
+          onLocationChange={handleLocationChange}
+          onJobTypeChange={handleJobTypeChange}
         />
       </section>
 

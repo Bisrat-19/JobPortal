@@ -9,12 +9,7 @@ interface AuthContextValue {
   isAdmin: boolean;
   updateProfile: (updates: Partial<Pick<AuthUser, "name" | "companyName">>) => void;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (
-    name: string,
-    email: string,
-    password: string,
-    role: UserRole,
-    options?: { companyName?: string }
+  signUp: (name: string, email: string, password: string, role: UserRole, options?: { companyName?: string }
   ) => Promise<void>;
   signOut: () => void;
   savedJobIds: string[];
