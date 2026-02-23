@@ -63,8 +63,13 @@ const SignUpPage = () => {
             setPassword("");
             setConfirmPassword("");
             setCompanyName("");
-        } catch {
-            setError("Sign up failed. Please try again.");
+        } catch (err: unknown) {
+            const message =
+                typeof err === "object" && err !== null && "message" in err
+                    ? String((err as { message?: string }).message)
+                    : "Sign up failed. Please try again.";
+            console.error("Sign up error:", err);
+            setError(message);
         } finally {
             setLoading(false);
         }

@@ -40,8 +40,13 @@ const SignInPage = () => {
                 localStorage.setItem("jobportal:lastEmail", email);
             }
             setPassword("");
-        } catch {
-            setError("Sign in failed. Please try again.");
+        } catch (err: unknown) {
+            const message =
+                typeof err === "object" && err !== null && "message" in err
+                    ? String((err as { message?: string }).message)
+                    : "Sign in failed. Please try again.";
+            console.error("Sign in error:", err);
+            setError(message);
         } finally {
             setLoading(false);
         }

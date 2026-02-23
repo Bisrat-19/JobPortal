@@ -1,5 +1,7 @@
-import { createContext, useState, type ReactNode } from "react";
+import { createContext, useEffect, useState, type ReactNode } from "react";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import type { AuthUser, UserRole } from "../types/api";
+import { supabase } from "../helper/supabaseClient";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -11,7 +13,7 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string, role: UserRole, options?: { companyName?: string }
   ) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
   savedJobIds: string[];
   toggleSavedJob: (jobId: string) => void;
 }
@@ -24,40 +26,116 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const mapSupabaseUserToAuthUser = (user: SupabaseUser): AuthUser => {
+  const metadata = (user.user_metadata || {}) as {
+    name?: string;
+    role?: UserRole;
+    companyId?: string;
+    companyName?: string;
+  };
+
+  return {
+    name: metadata.name || user.email || "User",
+    email: user.email || "",
+    role: metadata.role || "user",
+    companyId: metadata.companyId,
+    companyName: metadata.companyName,
+  };
+};
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [savedJobIds, setSavedJobIds] = useState<string[]>([]);
 
-  const signIn = async (email: string, _password: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setUser({ name: "John Doe", email, role: "user" });
+  useEffect(() => {
+    const initAuth = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error) return;
+      if (data.user) {
+        setUser(mapSupabaseUserToAuthUser(data.user));
+      }
+    };
+
+    void initAuth();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(mapSupabaseUserToAuthUser(session.user));
+      } else {
+        setUser(null);
+        setSavedJobIds([]);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) throw error;
+    if (data.user) {
+      setUser(mapSupabaseUserToAuthUser(data.user));
+    }
   };
 
   const signUp = async (
     name: string,
     email: string,
-    _password: string,
+    password: string,
     role: UserRole,
     options?: { companyName?: string }
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    const companyId =
+      role === "company" && options?.companyName
+        ? `company-${Date.now()}`
+        : undefined;
 
-    let companyId: string | undefined;
-    let companyName: string | undefined;
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+          role,
+          companyId,
+          companyName: options?.companyName,
+        },
+      },
+    });
 
-    if (role === "company" && options?.companyName) {
-      companyId = `company-${Date.now()}`;
-      companyName = options.companyName;
+    if (error) throw error;
+
+    if (data.user) {
+      const supaUser = data.user as SupabaseUser;
+      const identities = Array.isArray(supaUser.identities)
+        ? supaUser.identities
+        : [];
+
+      const alreadyRegistered = identities.length === 0;
+
+      if (alreadyRegistered) {
+        await supabase.auth.signOut();
+        throw new Error("This email is already registered. Please sign in instead.");
+      }
+
+      setUser(mapSupabaseUserToAuthUser(supaUser));
     }
-
-    setUser({ name, email, role, companyId, companyName });
   };
 
   const updateProfile: AuthContextValue["updateProfile"] = (updates) => {
     setUser((prev) => (prev ? { ...prev, ...updates } : prev));
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     setSavedJobIds([]);
   };
